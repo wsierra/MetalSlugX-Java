@@ -1,0 +1,95 @@
+////////////////////////
+	////codigo de prueba////
+	////////////////////////
+	
+	private static String accion;
+	private static java.awt.Panel prueba = new java.awt.Panel();
+	public static final Configuracion confDefecto = new Configuracion();
+	
+	public static void main(String[] args) throws IOException {
+		
+		try {
+			confDefecto.cargar("conf.dat");
+		}
+		catch (IOException | ClassNotFoundException e) {
+			System.err.println(e);
+			confDefecto.guardar("conf.dat");
+		}
+	
+		java.awt.Frame f = new java.awt.Frame("Prueba configuracion");
+		
+		prueba.addKeyListener(new java.awt.event.KeyAdapter() {
+			
+			public void keyPressed(KeyEvent evt) {
+				
+				if (accion != null) {
+					confDefecto.setControl(accion, evt.getKeyCode());
+					accion = null;
+					try {
+						confDefecto.guardar("conf.dat");
+					}
+					catch (IOException e) {
+						System.err.println(e);
+					}
+					
+					System.out.println(confDefecto.controles);
+				}
+				else if (Integer.valueOf(evt.getKeyCode()).equals(confDefecto.getControl("arriba")))
+					System.out.println("arriba");
+				else if (Integer.valueOf(evt.getKeyCode()).equals(confDefecto.getControl("abajo")))
+					System.out.println("abajo");
+				else if (Integer.valueOf(evt.getKeyCode()).equals(confDefecto.getControl("derecha")))
+					System.out.println("derecha");
+				else if (Integer.valueOf(evt.getKeyCode()).equals(confDefecto.getControl("izquierda")))
+					System.out.println("izquierda");
+				else if (Integer.valueOf(evt.getKeyCode()).equals(confDefecto.getControl("saltar")))
+					System.out.println("saltar");
+				else if (Integer.valueOf(evt.getKeyCode()).equals(confDefecto.getControl("disparar")))
+					System.out.println("disparar");
+				else if (Integer.valueOf(evt.getKeyCode()).equals(confDefecto.getControl("granada")))
+					System.out.println("granada");
+				else
+					System.out.println("tecla sin comando");
+			}
+		});
+		
+		java.awt.Panel ingreso = new java.awt.Panel();
+		java.awt.Button arriba = new java.awt.Button("arriba");
+		java.awt.Button abajo = new java.awt.Button("abajo");
+		java.awt.Button izquierda = new java.awt.Button("izquierda");
+		java.awt.Button derecha = new java.awt.Button("derecha");
+		java.awt.Button saltar = new java.awt.Button("saltar");
+		java.awt.Button disparar = new java.awt.Button("disparar");
+		java.awt.Button granada = new java.awt.Button("granada");
+		
+		prueba.add(arriba);
+		prueba.add(abajo);
+		prueba.add(izquierda);
+		prueba.add(derecha);
+		prueba.add(saltar);
+		prueba.add(disparar);
+		prueba.add(granada);
+		
+		java.awt.event.ActionListener al = new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				accion = ((java.awt.Button)evt.getSource()).getLabel();
+				prueba.requestFocus();
+			}
+		};
+		
+		arriba.addActionListener(al);
+		abajo.addActionListener(al);
+		izquierda.addActionListener(al);
+		derecha.addActionListener(al);
+		saltar.addActionListener(al);
+		disparar.addActionListener(al);
+		granada.addActionListener(al);
+		
+		prueba.setPreferredSize(new java.awt.Dimension(100, 150));
+		
+		f.add(prueba, java.awt.BorderLayout.CENTER);
+		f.pack();	
+		f.setVisible(true);
+		
+		prueba.requestFocus();		
+	}

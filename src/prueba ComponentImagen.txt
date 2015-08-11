@@ -1,0 +1,40 @@
+	////////////////////////
+	////Codigo de prueba////
+	////////////////////////	
+	
+	public static java.awt.Frame f = new java.awt.Frame();
+	public static java.awt.CardLayout cl = new java.awt.CardLayout();
+	public static java.awt.Panel p = new java.awt.Panel(cl);
+	public static ComponentImagen c = new ComponentImagen("Imagenes/MetalSlugScreen.png");
+	
+	public static void main(String[] a) {
+		
+		//c.setPreferredSize(new Dimension(50, 50));
+		//p.add(c, "a");
+		p.add(new ComponentImagen("Imagenes/hola.png"), "b");
+		p.add(new ComponentImagen("Imagenes/hola2.png"), "c");
+		p.add(new ComponentImagen("Imagenes/hola3.png"), "d");
+		p.add(new ComponentImagen("adfsdghjkhlj"), "e");
+		java.awt.Button b = new java.awt.Button("botoncin");
+
+		b.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					//cl.next(p);
+					c.setImagen("Imagenes/hola.png");
+				}
+		});
+		
+		//c.setPreferredSize(c.getPreferredSize());
+		//f.add(c, java.awt.BorderLayout.WEST);
+		java.awt.Canvas b2 = new java.awt.Canvas();
+		b2.setSize(250,1);
+		System.out.println(b2.getPreferredSize());
+		System.out.println(b2.isPreferredSizeSet());
+		f.add(b2, java.awt.BorderLayout.EAST);
+		System.out.println(b2.getPreferredSize());
+		//f.add(b, java.awt.BorderLayout.EAST);
+		f.pack();
+		f.setVisible(true);
+		System.out.println(b2.getPreferredSize());
+
+	}

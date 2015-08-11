@@ -1,0 +1,120 @@
+import java.awt.Dimension;
+import java.awt.Point;
+import java.util.Random;
+
+public class SoldadoEnemigo extends Soldado implements Enemigo {
+
+	private static final int ENERGIA = 1;
+	private static final float RAPIDEZ = 1.5f;
+	private static final float IMPULSO = -15.0f;
+	
+	/*-----------intervalo de validez------------*/
+	private static final int EXTREMO_INTERNO = 70;
+	private static final int EXTREMO_EXTERNO = 170;
+	private static final int DESP_MAXIMO = 100;
+	
+	static final Sprite spriteClase;
+	static {
+		spriteClase = new Sprite( MetalSlugT.DIR_SPRITES.resolve("soldado_enemigo.gif"), new Dimension(41, 75) );
+
+		spriteClase.addFilaElementos(0, 72, 76, 7, 1, 1);
+		spriteClase.addFilaElementos(76, 52, 78, 5, 3, 4);
+		spriteClase.addFilaElementos(154, 80, 76, 18, 1, 3);
+		spriteClase.addFilaElementos(230, 88, 79, 42, 4, 4);
+
+		spriteClase.addCuadroSecuencia(PARADO, 0, 0, -1);
+
+		spriteClase.addCuadroSecuencia(SALTANDO, 1, 3, -1);
+
+		spriteClase.addCuadroSecuencia(AVANZANDO, 1, 0, 7);
+		spriteClase.addCuadroSecuencia(AVANZANDO, 1, 1, 7);
+		spriteClase.addCuadroSecuencia(AVANZANDO, 1, 2, 7);
+		spriteClase.addCuadroSecuencia(AVANZANDO, 1, 3, 7);
+
+		spriteClase.addCuadroSecuencia(GRANADA, 2, 0, 10);
+		spriteClase.addCuadroSecuencia(GRANADA, 2, 1, 10);
+		spriteClase.addCuadroSecuencia(GRANADA, 2, 2, 10);
+
+		spriteClase.addCuadroSecuencia(MURIENDO, 3, 0, 10);
+		spriteClase.addCuadroSecuencia(MURIENDO, 3, 1, 10);
+		spriteClase.addCuadroSecuencia(MURIENDO, 3, 2, 10);
+		spriteClase.addCuadroSecuencia(MURIENDO, 3, 3, 30);
+	}
+
+	private Random random;
+	private int despIntervalo;
+	private int tiempoReubicacion;
+	private int contReubicacion;
+	private int detenido;
+
+	public SoldadoEnemigo() {
+		this(new Point());
+	}
+
+	public SoldadoEnemigo(Point posicion) {
+		super(ENERGIA, posicion, spriteClase);
+		setRapidez(RAPIDEZ);
+		setImpulsoSalto(IMPULSO);
+		setMiras(new Point(40, 14), null, null);
+		random = new Random();
+		tiempoReubicacion = random.nextInt(100) + 60;
+	}
+
+	@Override
+	public void actualizar() {
+		
+		if ( mundo.entreDosJugadores(getPosicion()) ) { 
+			if (detenido != 0) {
+				detenido--;
+				if (random.nextInt(120) == 0 && !enAire())
+					disparar();
+			}
+			else
+				switch (random.nextInt(120)) {
+					case 0 : avanzarDerecha(); break;
+					case 1 : avanzarIzquierda(); break;
+					case 3 : detener(); 
+							 detenido = 15;
+							 break;
+				}
+		}
+		else {
+			int distancia = getPosicion().x - mundo.getPosicionSJMasCercano(getPosicion()).x;
+			boolean invertido = distancia < 0;
+			
+			if (invertido)
+				distancia = -distancia;
+			
+			if (distancia < EXTREMO_INTERNO + despIntervalo)
+				alejarse(invertido);
+			else {
+				acercarse(invertido);
+				if (distancia < EXTREMO_EXTERNO + despIntervalo)
+					detener();			
+			}			
+		}
+		
+		if (contReubicacion-- == 0) {
+			contReubicacion = tiempoReubicacion;
+			despIntervalo = random.nextInt(DESP_MAXIMO + 1);
+		}
+		
+		if (random.nextInt(300) == 0)
+			lanzarGranada();
+		else if (random.nextInt(240) == 0)
+			saltar();
+			
+		super.actualizar();
+	}
+	
+	private void acercarse(boolean invertido) {
+		alejarse(!invertido);
+	}
+	
+	private void alejarse(boolean invertido) {
+		if (!invertido)
+			avanzarDerecha();
+		else
+			avanzarIzquierda();
+	}
+}

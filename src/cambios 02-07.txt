@@ -1,0 +1,7 @@
+cambios
+
+Partida -> activacion de soldados jugadores. calculo de la camara. nuevos: setAvanceCamara(), avanceCamara 
+ObjetoDeJuego -> metodos nuevos posicionarEnSuelo, setIniciarEnSuelo. cambios en activar
+Soldado -> uso de posicionarEnSuelo
+
+velocidad -> rapidez
